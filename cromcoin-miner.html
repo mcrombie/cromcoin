@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mine Cromcoin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Space+Grotesk:wght@300;400;500&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8B6E2A;
+    --stone: #2A2520;
+    --stone-mid: #3D3530;
+    --stone-light: #544E47;
+    --ore: #1A1714;
+    --text: #E8DEC8;
+    --text-dim: #9A8E7A;
+    --danger: #C44;
+    --success: #4A9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ore);
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .mine-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--stone);
+    border: 1px solid var(--stone-light);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,0,0,0.6);
+  }
+
+  /* Header */
+  .mine-header {
+    background: var(--stone-mid);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--stone-light);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .coin-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier Prime', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--gold-light);
+    flex-shrink: 0;
+  }
+
+  .mine-title {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.05em;
+  }
+
+  .mine-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--stone-light);
+  }
+
+  .stat {
+    padding: 1rem;
+    text-align: center;
+    border-right: 1px solid var(--stone-light);
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-value {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+
+  /* Main body */
+  .mine-body { padding: 2rem; }
+
+  /* Wallet section */
+  .section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .wallet-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .wallet-address {
+    flex: 1;
+    background: var(--ore);
+    border: 1px solid var(--stone-light);
+    border-radius: 3px;
+    padding: 0.6rem 0.8rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--stone-light);
+    border-radius: 3px;
+    background: var(--stone-mid);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn:hover:not(:disabled) {
+    border-color: var(--gold-dim);
+    color: var(--gold-light);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--stone);
+    font-weight: 500;
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    margin-top: 1.5rem;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--gold);
+    color: var(--stone);
+  }
+
+  /* Progress section */
+  .progress-section {
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+
+  .progress-section.active { display: block; }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--ore);
+    border: 1px solid var(--stone-light);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+    width: 0%;
+    transition: width 0.1s;
+    border-radius: 2px;
+  }
+
+  .progress-text {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .hash-display {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    word-break: break-all;
+    background: var(--ore);
+    border: 1px solid var(--stone-light);
+    padding: 0.5rem;
+    border-radius: 2px;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Status message */
+  .status-msg {
+    font-size: 0.8rem;
+    padding: 0.7rem;
+    border-radius: 3px;
+    margin-top: 1rem;
+    display: none;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .status-msg.show { display: block; }
+  .status-msg.success { background: rgba(68,170,136,0.1); border: 1px solid var(--success); color: var(--success); }
+  .status-msg.error   { background: rgba(204,68,68,0.1);  border: 1px solid var(--danger);  color: var(--danger);  }
+  .status-msg.info    { background: rgba(201,168,76,0.1);  border: 1px solid var(--gold-dim); color: var(--gold-light); }
+
+  /* Mine seam decoration */
+  .seam {
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold-dim) 0px, var(--gold-dim) 4px,
+      transparent 4px, transparent 12px,
+      var(--gold-dim) 12px, var(--gold-dim) 14px,
+      transparent 14px, transparent 24px
+    );
+    opacity: 0.3;
+  }
+
+  /* Footer */
+  .mine-footer {
+    padding: 1rem 2rem;
+    border-top: 1px solid var(--stone-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  .network-badge {
+    font-size: 0.65rem;
+    font-family: 'Courier Prime', monospace;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--stone-light);
+    border-radius: 2px;
+    color: var(--text-dim);
+  }
+</style>
+</head>
+<body>
+
+<div class="mine-card">
+  <div class="seam"></div>
+
+  <div class="mine-header">
+    <div class="coin-icon">C</div>
+    <div>
+      <div class="mine-title">CROMCOIN MINE</div>
+      <div class="mine-subtitle">Base Network · Proof of Work</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="stat-remaining">—</div>
+      <div class="stat-label">Sessions left</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">1,000</div>
+      <div class="stat-label">CROMCOIN / mine</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-cooldown">—</div>
+      <div class="stat-label">Your cooldown</div>
+    </div>
+  </div>
+
+  <div class="mine-body">
+
+    <div class="section-label">Wallet</div>
+    <div class="wallet-row">
+      <div class="wallet-address" id="wallet-display">Not connected</div>
+      <button class="btn" id="connect-btn" onclick="connectWallet()">Connect</button>
+    </div>
+
+    <div class="progress-section" id="progress-section">
+      <div class="section-label">Mining progress</div>
+      <div class="progress-header">
+        <span class="progress-text" id="progress-label">Searching for valid nonce...</span>
+        <span class="progress-text" id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="hash-display" id="hash-display">waiting to start...</div>
+    </div>
+
+    <button class="btn btn-primary" id="mine-btn" onclick="startMining()" disabled>
+      Connect wallet to mine
+    </button>
+
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <div class="mine-footer">
+    <span class="footer-text">1,000,000,000 CROMCOIN · Fixed supply · No inflation</span>
+    <span class="network-badge">BASE</span>
+  </div>
+
+  <div class="seam"></div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — replace with your deployed contract address
+// ============================================================
+const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS_HERE";
+const BASE_CHAIN_ID = "0x2105"; // Base mainnet (8453 in hex)
+const DIFFICULTY = 20; // must match contract DIFFICULTY constant
+const BLOCK_WINDOW = 10; // must match contract BLOCK_WINDOW constant
+
+// Minimal ABI — only what the frontend needs
+const ABI = [
+  "function mine(uint256 nonce) external",
+  "function cooldownRemaining(address wallet) view returns (uint256)",
+  "function sessionsRemaining() view returns (uint256)",
+  "function currentBlockWindow() view returns (uint256)",
+];
+
+// ============================================================
+// State
+// ============================================================
+let provider = null;
+let signer = null;
+let contract = null;
+let userAddress = null;
+let isMining = false;
+
+// ============================================================
+// Wallet connection
+// ============================================================
+async function connectWallet() {
+  if (!window.ethereum) {
+    showStatus("MetaMask not detected. Please install MetaMask or a Web3 wallet.", "error");
+    return;
+  }
+
+  try {
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    if (chainId !== BASE_CHAIN_ID) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: BASE_CHAIN_ID }],
+        });
+      } catch (switchErr) {
+        if (switchErr.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: BASE_CHAIN_ID,
+              chainName: "Base",
+              nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+              rpcUrls: ["https://mainnet.base.org"],
+              blockExplorerUrls: ["https://basescan.org"],
+            }],
+          });
+        } else {
+          throw switchErr;
+        }
+      }
+    }
+
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+    document.getElementById("wallet-display").textContent =
+      userAddress.slice(0, 6) + "..." + userAddress.slice(-4);
+    document.getElementById("connect-btn").textContent = "Connected";
+    document.getElementById("connect-btn").disabled = true;
+
+    await refreshStats();
+
+    showStatus("Wallet connected. Ready to mine.", "info");
+  } catch (err) {
+    showStatus("Connection failed: " + (err.message || err), "error");
+  }
+}
+
+// ============================================================
+// Stats refresh
+// ============================================================
+async function refreshStats() {
+  if (!contract || !userAddress) return;
+
+  try {
+    const [sessions, cooldown] = await Promise.all([
+      contract.sessionsRemaining(),
+      contract.cooldownRemaining(userAddress),
+    ]);
+
+    document.getElementById("stat-remaining").textContent =
+      Number(sessions).toLocaleString();
+
+    if (Number(cooldown) === 0) {
+      document.getElementById("stat-cooldown").textContent = "Ready";
+      document.getElementById("mine-btn").disabled = false;
+      document.getElementById("mine-btn").textContent = "Start mining";
+    } else {
+      const h = Math.floor(Number(cooldown) / 3600);
+      const m = Math.floor((Number(cooldown) % 3600) / 60);
+      document.getElementById("stat-cooldown").textContent = `${h}h ${m}m`;
+      document.getElementById("mine-btn").disabled = true;
+      document.getElementById("mine-btn").textContent = `Come back in ${h}h ${m}m`;
+    }
+
+    if (Number(sessions) === 0) {
+      document.getElementById("mine-btn").disabled = true;
+      document.getElementById("mine-btn").textContent = "The mine is empty";
+    }
+  } catch (err) {
+    console.error("refreshStats error:", err);
+  }
+}
+
+// ============================================================
+// PoW mining (runs in main thread via requestAnimationFrame chunks)
+// Works in all browsers without SharedArrayBuffer requirement.
+// ============================================================
+async function startMining() {
+  if (isMining || !contract || !userAddress) return;
+  isMining = true;
+
+  document.getElementById("mine-btn").disabled = true;
+  document.getElementById("mine-btn").textContent = "Mining...";
+  document.getElementById("progress-section").classList.add("active");
+  document.getElementById("status-msg").classList.remove("show");
+
+  try {
+    const blockWindow = await contract.currentBlockWindow();
+
+    const target = buildTarget(DIFFICULTY);
+    let nonce = BigInt(Math.floor(Math.random() * 2 ** 32));
+    let found = false;
+    let attempts = 0;
+    let validNonce = null;
+
+    const CHUNK = 5000;
+    const addressBytes = hexToBytes(userAddress.slice(2).padStart(40, "0"));
+    const blockWindowBigInt = BigInt(blockWindow);
+
+    await new Promise((resolve, reject) => {
+      function doChunk() {
+        for (let i = 0; i < CHUNK; i++) {
+          nonce++;
+          attempts++;
+
+          const hash = keccak256Packed(addressBytes, nonce, blockWindowBigInt);
+          updateHashDisplay(hash, attempts);
+
+          if (meetsTarget(hash, target)) {
+            validNonce = nonce;
+            found = true;
+            break;
+          }
+        }
+
+        const pct = Math.min(99, Math.log10(attempts + 1) / Math.log10(2 ** DIFFICULTY) * 100);
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-pct").textContent = Math.floor(pct) + "%";
+
+        if (found) {
+          resolve();
+        } else {
+          requestAnimationFrame(doChunk);
+        }
+      }
+      requestAnimationFrame(doChunk);
+    });
+
+    document.getElementById("progress-label").textContent = "Nonce found! Submitting transaction...";
+    document.getElementById("progress-fill").style.width = "100%";
+    document.getElementById("progress-pct").textContent = "100%";
+
+    const tx = await contract.mine(validNonce);
+    showStatus(`Transaction submitted. Waiting for confirmation...`, "info");
+
+    await tx.wait();
+
+    showStatus(`1,000 CROMCOIN successfully mined! Transaction: ${tx.hash.slice(0, 10)}...`, "success");
+    await refreshStats();
+
+  } catch (err) {
+    if (err.code === 4001) {
+      showStatus("Transaction rejected.", "error");
+    } else {
+      showStatus("Error: " + (err.reason || err.message || "Unknown error"), "error");
+    }
+  } finally {
+    isMining = false;
+    document.getElementById("mine-btn").disabled = false;
+    document.getElementById("mine-btn").textContent = "Mine again tomorrow";
+    document.getElementById("progress-section").classList.remove("active");
+  }
+}
+
+// ============================================================
+// Hashing utilities
+// ============================================================
+
+function buildTarget(bits) {
+  const target = new Uint8Array(32).fill(0xFF);
+  const fullBytes = Math.floor(bits / 8);
+  for (let i = 0; i < fullBytes; i++) target[i] = 0;
+  const remaining = bits % 8;
+  if (remaining > 0) target[fullBytes] = 0xFF >> remaining;
+  return target;
+}
+
+function meetsTarget(hashBytes, target) {
+  for (let i = 0; i < 32; i++) {
+    if (hashBytes[i] < target[i]) return true;
+    if (hashBytes[i] > target[i]) return false;
+  }
+  return true;
+}
+
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+function uint256ToBytes(n) {
+  const bytes = new Uint8Array(32);
+  let v = n;
+  for (let i = 31; i >= 0; i--) {
+    bytes[i] = Number(v & 0xFFn);
+    v >>= 8n;
+  }
+  return bytes;
+}
+
+function keccak256Packed(addressBytes, nonce, blockWindow) {
+  // abi.encodePacked(address, uint256, uint256) = 20 + 32 + 32 = 84 bytes
+  const packed = new Uint8Array(84);
+  packed.set(addressBytes, 0);
+  packed.set(uint256ToBytes(nonce), 20);
+  packed.set(uint256ToBytes(blockWindow), 52);
+  const hex = ethers.keccak256(packed);
+  return hexToBytes(hex.slice(2));
+}
+
+function updateHashDisplay(hashBytes, attempts) {
+  const hex = Array.from(hashBytes).map(b => b.toString(16).padStart(2, "0")).join("");
+  document.getElementById("hash-display").textContent = `0x${hex}`;
+  document.getElementById("progress-label").textContent =
+    `Searching... ${attempts.toLocaleString()} attempts`;
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById("status-msg");
+  el.textContent = msg;
+  el.className = `status-msg show ${type}`;
+}
+
+// Refresh stats every minute once wallet is connected
+setInterval(() => { if (userAddress) refreshStats(); }, 60000);
+</script>
+
+<!-- ethers.js v6 from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+</body>
+</html>
