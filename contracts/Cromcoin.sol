@@ -99,7 +99,7 @@ contract Cromcoin is ERC20, Ownable {
 
         // 4. Proof-of-work verification
         bytes32 hash = keccak256(abi.encodePacked(msg.sender, nonce, blockWindow));
-        require(_hasLeadingZeroBits(hash, DIFFICULTY), "Cromcoin: invalid proof-of-work");
+        require(_hasLeadingZeroBits(hash, _difficulty()), "Cromcoin: invalid proof-of-work");
 
         // 5. Update state
         lastClaimed[msg.sender] = block.timestamp;
@@ -134,6 +134,14 @@ contract Cromcoin is ERC20, Ownable {
     /// @notice Returns the current block window (for client-side PoW computation)
     function currentBlockWindow() external view returns (uint256) {
         return block.number / BLOCK_WINDOW;
+    }
+
+    // -------------------------------------------------------------------------
+    // Internal: difficulty hook (virtual so a test harness can override it)
+    // -------------------------------------------------------------------------
+
+    function _difficulty() internal pure virtual returns (uint256) {
+        return DIFFICULTY;
     }
 
     // -------------------------------------------------------------------------
