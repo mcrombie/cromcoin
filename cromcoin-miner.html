@@ -357,8 +357,9 @@
 // ============================================================
 // CONFIG — replace with your deployed contract address
 // ============================================================
-const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS_HERE";
-const BASE_CHAIN_ID = "0x2105"; // Base mainnet (8453 in hex)
+// TESTNET (Base Sepolia) — swap to the mainnet address + chain ID before a real launch.
+const CONTRACT_ADDRESS = "0x1dFC0a27572501BD3ebb88eaA3F781f8FE9C9366";
+const BASE_CHAIN_ID = "0x14a34"; // Base Sepolia (84532 in hex)
 const DIFFICULTY = 20; // must match contract DIFFICULTY constant
 const BLOCK_WINDOW = 10; // must match contract BLOCK_WINDOW constant
 
@@ -404,10 +405,10 @@ async function connectWallet() {
             method: "wallet_addEthereumChain",
             params: [{
               chainId: BASE_CHAIN_ID,
-              chainName: "Base",
+              chainName: "Base Sepolia",
               nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-              rpcUrls: ["https://mainnet.base.org"],
-              blockExplorerUrls: ["https://basescan.org"],
+              rpcUrls: ["https://sepolia.base.org"],
+              blockExplorerUrls: ["https://sepolia.basescan.org"],
             }],
           });
         } else {

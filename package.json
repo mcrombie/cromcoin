@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "compile": "npx hardhat compile",
+    "generate-wallet": "npx hardhat run scripts/generate-wallet.js",
     "test": "npx hardhat test",
     "deploy:local": "npx hardhat run scripts/deploy.js",
     "deploy:base-sepolia": "npx hardhat run scripts/deploy.js --network baseSepolia",

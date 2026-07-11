@@ -31,7 +31,7 @@ test/
 scripts/                    # deployment scripts (see PLAN.md)
   deploy.js                 # production Cromcoin deploy script
 cromcoin-miner.html         # standalone frontend: wallet connect + client-side PoW + claim UI
-hardhat.config.js           # networks: Base mainnet + Base Sepolia, Basescan verification
+hardhat.config.js           # networks: Base mainnet + Base Sepolia, Etherscan V2 verification
 ```
 
 ## Setup
@@ -39,7 +39,7 @@ hardhat.config.js           # networks: Base mainnet + Base Sepolia, Basescan ve
 ```bash
 npm install
 cp .env.example .env
-# fill in PRIVATE_KEY (deployer wallet) and BASESCAN_API_KEY
+# fill in PRIVATE_KEY (deployer wallet) and ETHERSCAN_API_KEY
 ```
 
 ## Testing
