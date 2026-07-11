@@ -112,6 +112,30 @@ describe("Cromcoin", function () {
     });
   });
 
+  describe("_hasLeadingZeroBits()", function () {
+    it("returns true for 0 required bits", async function () {
+      expect(await cromcoin.hasLeadingZeroBits(ethers.ZeroHash, 0)).to.equal(true);
+    });
+
+    it("checks the production 20-bit boundary", async function () {
+      const passingHash =
+        "0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const failingHash =
+        "0x0000100000000000000000000000000000000000000000000000000000000000";
+
+      expect(await cromcoin.hasLeadingZeroBits(passingHash, 20)).to.equal(true);
+      expect(await cromcoin.hasLeadingZeroBits(failingHash, 20)).to.equal(false);
+    });
+
+    it("handles a full 256-bit zero requirement", async function () {
+      const almostZero =
+        "0x0000000000000000000000000000000000000000000000000000000000000001";
+
+      expect(await cromcoin.hasLeadingZeroBits(ethers.ZeroHash, 256)).to.equal(true);
+      expect(await cromcoin.hasLeadingZeroBits(almostZero, 256)).to.equal(false);
+    });
+  });
+
   // ── 3. mine() — invalid PoW ────────────────────────────────────────────────
   describe("mine() — invalid proof-of-work", function () {
     it("reverts when nonce=0 does not meet difficulty", async function () {

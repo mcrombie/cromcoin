@@ -12,4 +12,8 @@ contract CromcoinHarness is Cromcoin {
     function _difficulty() internal pure override returns (uint256) {
         return 4;
     }
+
+    function hasLeadingZeroBits(bytes32 hash, uint256 bits) external pure returns (bool) {
+        return _hasLeadingZeroBits(hash, bits);
+    }
 }

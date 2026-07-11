@@ -1,6 +1,6 @@
 # Cromcoin — Path to Launch
 
-Current state: contract is written and fully tested (13/13 passing). Nothing has been
+Current state: contract is written and fully tested (16/16 passing). Nothing has been
 deployed. This is the remaining path to a live, mineable coin.
 
 ## Phase 0 — Decisions before writing more code
@@ -23,13 +23,13 @@ affect the deploy script and are hard to change once mainnet-deployed.
 
 ## Phase 1 — Deploy script
 
-- [ ] Write `scripts/deploy.js`:
+- [x] Write `scripts/deploy.js`:
   - Deploy `Cromcoin` (production contract, not the harness).
   - Log the deployed address and the deployer's balance before/after.
   - Optionally auto-run `hardhat verify` at the end (needs a confirmation delay —
     Basescan can't verify until the deploy tx is indexed, typically wait ~30s or a
     few block confirmations first).
-- [ ] Dry-run against the local Hardhat network to confirm the script itself works
+- [x] Dry-run against the local Hardhat network to confirm the script itself works
       before touching a real chain.
 
 ## Phase 2 — Testnet deployment (Base Sepolia)
@@ -57,7 +57,7 @@ holding user deposits), but at minimum:
       which is correct and reentrancy-safe since OZ's `_transfer` doesn't call
       external contracts.
 - [ ] Confirm the `Ownable`/admin decision from Phase 0 is finalized and intentional.
-- [ ] Sanity-check `_hasLeadingZeroBits` against edge cases (bits = 0, bits = 256,
+- [x] Sanity-check `_hasLeadingZeroBits` against edge cases (bits = 0, bits = 256,
       non-multiple-of-8 values) — a quick unit test for `bits=20` on a known hash
       would close the loop, since current tests only exercise `bits=4`.
 - [ ] Decide whether `BLOCK_WINDOW = 10` (~20s on Base) gives enough time for a

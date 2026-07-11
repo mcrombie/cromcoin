@@ -27,8 +27,9 @@ contracts/
   test/
     CromcoinHarness.sol    # test-only subclass, difficulty lowered to 4 bits
 test/
-  Cromcoin.test.js          # Hardhat/Chai test suite (13 tests)
+  Cromcoin.test.js          # Hardhat/Chai test suite
 scripts/                    # deployment scripts (see PLAN.md)
+  deploy.js                 # production Cromcoin deploy script
 cromcoin-miner.html         # standalone frontend: wallet connect + client-side PoW + claim UI
 hardhat.config.js           # networks: Base mainnet + Base Sepolia, Basescan verification
 ```
@@ -44,17 +45,49 @@ cp .env.example .env
 ## Testing
 
 ```bash
+npm run compile
 npm test
 ```
 
 Runs the full suite against `CromcoinHarness` (difficulty 4, so PoW brute-forcing is
-instant), while a dedicated read-only test confirms the production contract's
-`DIFFICULTY` constant is still 20.
+instant), while dedicated read-only tests confirm the production difficulty and PoW
+bit-checking boundaries.
 
 ## Deployment
 
-Not yet deployed anywhere. See [`PLAN.md`](PLAN.md) for the full path from here to a
-live contract with a working frontend.
+Not yet deployed anywhere. The deploy script targets the production `Cromcoin`
+contract, not the test harness.
+
+Local dry-run:
+
+```bash
+npm run deploy:local
+```
+
+Base Sepolia:
+
+```bash
+npm run deploy:base-sepolia
+npm run verify:base-sepolia -- <deployed-address>
+```
+
+Base mainnet:
+
+```bash
+npm run deploy:base
+npm run verify:base -- <deployed-address>
+```
+
+Set `VERIFY=true` to have `scripts/deploy.js` wait briefly and attempt verification
+after deployment:
+
+```bash
+$env:VERIFY="true"
+npm run deploy:base-sepolia
+```
+
+See [`PLAN.md`](PLAN.md) for the full path from here to a live contract with a
+working frontend.
 
 ## Frontend
 
